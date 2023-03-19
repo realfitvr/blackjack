@@ -82,6 +82,42 @@ impl InputParam {
                         ui.label("No file selected");
                     }
                 });
+            },
+            InputParamValue::File { path } => {
+                ui.label(name);
+                ui.horizontal(|ui| {
+                    if ui.button("Select").clicked() {
+                        *path = rfd::FileDialog::new().pick_file();
+                    }
+                    if let Some(ref path) = path {
+                        ui.label(
+                            path.clone()
+                                .into_os_string()
+                                .into_string()
+                                .unwrap_or_else(|_| "<Invalid string>".to_owned()),
+                        );
+                    } else {
+                        ui.label("No file selected");
+                    }
+                });
+            },
+            InputParamValue::Directory { path } => {
+                ui.label(name);
+                ui.horizontal(|ui| {
+                    if ui.button("Select").clicked() {
+                        *path = rfd::FileDialog::new().pick_folder();
+                    }
+                    if let Some(ref path) = path {
+                        ui.label(
+                            path.clone()
+                                .into_os_string()
+                                .into_string()
+                                .unwrap_or_else(|_| "<Invalid string>".to_owned()),
+                        );
+                    } else {
+                        ui.label("No file selected");
+                    }
+                });
             }
         }
     }

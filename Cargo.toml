@@ -31,7 +31,6 @@ smallvec = { version = "1.7.0", features = ["serde"] }
 itertools = "0.10"
 anyhow = { version = "1.0", features = ["backtrace"] }
 bytemuck = { version = "1.7", features = ["derive"] }
-serde = { version = "1.0", features =  ["derive"] }
 ron = "0.7"
 strum = "0.23.0"
 strum_macros = "0.23.0"
@@ -46,6 +45,11 @@ slotmap = { version = "1.0", features = ["serde"] }
 num-traits = "0.2.14"
 atomic_float = "0.1"
 profiling = { version = "1.0", features = ["profile-with-tracy"] }
+
+nalgebra = "0.30"
+exr = "1.4"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
 
 [patch.crates-io]
 # NOTE: These patches are only used for development, and should be left

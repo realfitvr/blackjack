@@ -380,6 +380,8 @@ impl<'a> GraphNodeWidget<'a> {
             DataType::Selection => color_from_hex("#4b7f52").unwrap(),
             DataType::Enum => color_from_hex("#ff0000").unwrap(), // Should never be in a port, so highlight in red
             DataType::NewFile => color_from_hex("#ff0000").unwrap(), // Should never be in a port, so highlight in red
+            DataType::File => color_from_hex("#ff0000").unwrap(), // Should never be in a port, so highlight in red
+            DataType::Directory => color_from_hex("#ff0000").unwrap(), // Should never be in a port, so highlight in red
         }
     }
 }

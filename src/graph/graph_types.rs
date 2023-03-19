@@ -23,6 +23,8 @@ pub enum DataType {
     Enum,
     // The path to a (possibly new) file where export contents will be saved to
     NewFile,
+    File,
+    Directory,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -48,6 +50,12 @@ pub enum InputParamValue {
     NewFile {
         path: Option<std::path::PathBuf>,
     },
+    File {
+        path: Option<std::path::PathBuf>,
+    },
+    Directory {
+        path: Option<std::path::PathBuf>,
+    }
 }
 
 /// There are three kinds of input params
@@ -143,6 +151,8 @@ pub enum InputDescriptor {
     Scalar { default: f32, min: f32, max: f32 },
     Enum { default: Option<u32>, values: Vec<String> },
     NewFile,
+    File,
+    Directory,
 }
 
 pub struct OutputDescriptor(DataType);

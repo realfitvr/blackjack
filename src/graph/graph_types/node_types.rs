@@ -3,6 +3,7 @@ use strum::IntoEnumIterator;
 
 #[derive(Clone, Copy, strum_macros::EnumIter)]
 pub enum GraphNodeType {
+    LoadProjectorMesh,
     MakeBox,
     MakeQuad,
     BevelEdges,
@@ -70,6 +71,18 @@ macro_rules! in_file {
     };
 }
 
+macro_rules! in_file {
+    ($name:expr) => {
+        ($name.to_owned(), InputDescriptor::File)
+    };
+}
+
+macro_rules! in_directory {
+    ($name:expr) => {
+        ($name.to_owned(), InputDescriptor::Directory)
+    };
+}
+
 macro_rules! in_enum {
     ($name:expr, $( $values:expr ),+) => {
         ($name.to_owned(), InputDescriptor::Enum { default: None, values: vec![$( $values.to_owned() ),+] })
@@ -84,6 +97,19 @@ impl GraphNodeType {
         let label = self.type_label().into();
         let op_name = self.op_name().into();
         match self {
+            GraphNodeType::LoadProjectorMesh => NodeDescriptor {
+                op_name,
+                label,
+                inputs: vec![
+                    in_file!("projector_file"),
+                    in_file!("projector_indices_file"),
+                    in_file!("projector_positions_file"),
+                    in_directory!("depth_frames_dir"),
+                    in_scalar!("frame", 0.0, 0.0, 100.0),
+                ],
+                outputs: vec![out_mesh!("out_mesh")],
+                is_executable: false,
+            },
             GraphNodeType::MakeBox => NodeDescriptor {
                 op_name,
                 label,
@@ -191,6 +217,7 @@ impl GraphNodeType {
 
     pub fn type_label(&self) -> &'static str {
         match self {
+            GraphNodeType::LoadProjectorMesh => "Projector mesh",
             GraphNodeType::MakeBox => "Box",
             GraphNodeType::MakeQuad => "Quad",
             GraphNodeType::BevelEdges => "Bevel edges",
@@ -208,6 +235,7 @@ impl GraphNodeType {
     /// which PolyASM instructions to emit.
     pub fn op_name(&self) -> &'static str {
         match self {
+            GraphNodeType::LoadProjectorMesh => "LoadProjectorMesh",
             GraphNodeType::MakeBox => "MakeBox",
             GraphNodeType::MakeQuad => "MakeQuad",
             GraphNodeType::BevelEdges => "BevelEdges",

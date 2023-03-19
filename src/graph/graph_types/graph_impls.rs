@@ -87,6 +87,24 @@ impl Graph {
                         node: node_id,
                         shown_inline: true,
                     },
+                    InputDescriptor::File => InputParam {
+                        id,
+                        typ: DataType::File,
+                        value: InputParamValue::File { path: None },
+                        metadata: smallvec![],
+                        kind: ConstantOnly,
+                        node: node_id,
+                        shown_inline: true,
+                    },
+                    InputDescriptor::Directory => InputParam {
+                        id,
+                        typ: DataType::Directory,
+                        value: InputParamValue::Directory { path: None },
+                        metadata: smallvec![],
+                        kind: ConstantOnly,
+                        node: node_id,
+                        shown_inline: true,
+                    },
                 });
                 (input_name, input_id)
             })

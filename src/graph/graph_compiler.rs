@@ -55,6 +55,14 @@ where
                 let path: std::path::PathBuf = path.ok_or_else(|| anyhow!("Path is not set"))?;
                 Ok(program.mem_alloc_raw(path))
             }
+            InputParamValue::File { path } => {
+                let path: std::path::PathBuf = path.ok_or_else(|| anyhow!("Path is not set"))?;
+                Ok(program.mem_alloc_raw(path))
+            }
+            InputParamValue::Directory { path } => {
+                let path: std::path::PathBuf = path.ok_or_else(|| anyhow!("Path is not set"))?;
+                Ok(program.mem_alloc_raw(path))
+            }
         }?;
         MemAddr::from_raw_checked(program, addr, param_name)
     }
@@ -98,7 +106,18 @@ fn gen_code_for_node(
         };
     }
 
-    match graph[node_id].op_name.clone().as_str() {
+    match graph[node_id].op_name.as_str() {
+        "LoadProjectorMesh" => {
+            let operation = PolyAsmInstruction::LoadProjectorMesh {
+                projector_file: input!("projector_file"),
+                projector_indices_file: input!("projector_indices_file"),
+                projector_positions_file: input!("projector_positions_file"),
+                depth_frames_dir: input!("depth_frames_dir"),
+                frame: input!("frame"),
+                out_mesh: output!("out_mesh"),
+            };
+            program.add_operation(operation);
+        }
         "MakeBox" => {
             let operation = PolyAsmInstruction::MakeCube {
                 origin: input!("origin"),

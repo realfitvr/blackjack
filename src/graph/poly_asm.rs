@@ -65,6 +65,14 @@ where
 /// specified.
 #[derive(Clone)]
 pub enum PolyAsmInstruction {
+    LoadProjectorMesh {
+        projector_file: MemAddr<std::path::PathBuf>,
+        projector_indices_file: MemAddr<std::path::PathBuf>,
+        projector_positions_file: MemAddr<std::path::PathBuf>,
+        depth_frames_dir: MemAddr<std::path::PathBuf>,
+        frame: MemAddr<f32>,
+        out_mesh: MemAddr<HalfEdgeMesh>,
+    },
     MakeCube {
         origin: MemAddr<Vec3>,
         size: MemAddr<Vec3>,
@@ -202,6 +210,25 @@ impl PolyAsmProgram {
 
     pub fn execute_instruction(&mut self, instr: PolyAsmInstruction) -> Result<()> {
         match &instr {
+            PolyAsmInstruction::LoadProjectorMesh {
+                projector_file,
+                projector_indices_file,
+                projector_positions_file,
+                depth_frames_dir,
+                frame,
+                out_mesh
+            } => {
+                let projector_file = self.mem_fetch(*projector_file)?;
+                let projector_indices_file = self.mem_fetch(*projector_indices_file)?;
+                let projector_positions_file = self.mem_fetch(*projector_positions_file)?;
+                let depth_frames_dir = self.mem_fetch(*depth_frames_dir)?;
+                let frame = self.mem_fetch(*frame)?;
+                let (positions, polygons) = load_projector_frame(projector_file, projector_indices_file, projector_positions_file, depth_frames_dir, frame as i32)?;
+                self.mem_store(
+                    *out_mesh,
+                    halfedge::HalfEdgeMesh::build_from_polygons(&positions, &polygons)?
+                )?;
+            }
             PolyAsmInstruction::MakeCube {
                 origin: center,
                 size,
